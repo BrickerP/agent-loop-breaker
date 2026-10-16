@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "loops_detected": 2,
+  "turns_run": 11,
+  "turns_saved": 69,
+  "tokens_saved_est": 935,
+  "escaped": 0
+}

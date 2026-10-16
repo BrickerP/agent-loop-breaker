@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        env:
+          PYTHONPATH: src
+        run: python3 -m unittest discover -s tests -v
+      - name: Demo (full E2E)
+        env:
+          PYTHONPATH: src
+        run: python3 -m agent_loop_breaker demo
+      - name: Demo goodbye-loop
+        env:
+          PYTHONPATH: src
+        run: python3 -m agent_loop_breaker demo-goodbye-loop
+      - name: Report artifacts exist
+        run: |
+          test -f docs/demo-report.html
+          test -f docs/demo-events.jsonl

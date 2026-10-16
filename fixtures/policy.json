@@ -1,0 +1,8 @@
+{
+  "window_n": 6,
+  "repetition_threshold": 0.75,
+  "farewell_streak": 4,
+  "tool_repeat_k": 3,
+  "max_turns": 40,
+  "notes": "Default break rules for demo-goodbye-loop. Override via CLI flags."
+}

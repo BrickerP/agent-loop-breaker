@@ -1,0 +1,34 @@
+agent-loop-breaker demo-goodbye-loop
+========================================================
+Use case: two deterministic script agents reproduce
+  (A) mutual goodbye dead-loop (recruiter ↔ candidate)
+  (B) identical tool+args retry (search_jobs / send_email)
+Breaker trips mid-run; control run shows uncapped thrash.
+Heat: viral AI goodbye-loop (~56s) + Guardian rollback cost.
+
+config: window_n=6  repetition_threshold=0.75
+        farewell_streak=4  tool_repeat_k=3
+        max_turns=40
+
+Scenario A · goodbye ping-pong (control, breaker OFF)
+--------------------------------------------------------
+  turns_run=40  broken=False
+Scenario A · goodbye ping-pong (breaker ON)
+--------------------------------------------------------
+  turns_run=8  broken=True  rule=text_repetition
+  reason: normalized text repetition ratio 0.83 ≥ 0.75 over last 6 turns (dominant='FAREWELL')
+
+Scenario B · tool+args retry (control, breaker OFF)
+--------------------------------------------------------
+  tool_calls_run=40  broken=False
+Scenario B · tool+args retry (breaker ON)
+--------------------------------------------------------
+  tool_calls_run=3  broken=True  rule=tool_args_repeat
+  reason: identical tool+args fingerprint b1b3e9fad500fb14 for 3 consecutive calls (tool='search_jobs')
+--------------------------------------------------------
+RESULT: PASS
+  loops_detected=2  turns_run=11  turns_saved=69  tokens_saved_est=935  escaped=0
+  goodbye: control_turns=40  break_turns=8  rule=text_repetition
+  tool_retry: control_calls=40  break_calls=3  rule=tool_args_repeat
+  event log → /workspace/agent-loop-breaker/docs/demo-events.jsonl
+  HTML report → /workspace/agent-loop-breaker/docs/demo-report.html
